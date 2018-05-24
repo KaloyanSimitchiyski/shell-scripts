@@ -8,7 +8,7 @@ function get_local_branches() {
 
 get_local_branches | while read -r branch; do
     echo "Latest commit on branch '${branch}' is:"
-    git log --oneline --decorate --stat -1 "${branch}"
+    git log --pretty=format:"%C(yellow)%h %C(cyan)%cd %Creset%s" --stat --date=relative -1 "${branch}"
 
     echo
     read -rp "Delete branch '${branch}' (y/n)? " ans < /dev/tty
@@ -16,8 +16,9 @@ get_local_branches | while read -r branch; do
         y|Y )
             echo "Deleting..."
             git branch -D "${branch}" ;;
+
         * )
-            ;;
+            echo "Skipping..." ;;
     esac
     echo
 done

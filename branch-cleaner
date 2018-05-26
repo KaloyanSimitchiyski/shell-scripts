@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# outputs all local branches except the current one
+# outputs all local branches except master and the current one
 function get_local_branches() {
     local current_branch="$(git branch --no-color | grep -E '^\*' | cut -d' ' -f2)"
-    git for-each-ref refs/heads | cut -d/ -f3 | grep -v "${current_branch}"
+    git for-each-ref refs/heads | cut -d/ -f3 | grep -Ev "^(${current_branch}|master)$"
 }
 
 get_local_branches | while read -r branch; do
@@ -14,11 +14,11 @@ get_local_branches | while read -r branch; do
     read -rp "Delete branch '${branch}' (y/n)? " ans < /dev/tty
     case "${ans}" in
         y|Y )
-            echo "Deleting..."
+            echo Deleting...
             git branch -D "${branch}" ;;
 
         * )
-            echo "Skipping..." ;;
+            echo Skipping... ;;
     esac
     echo
 done
